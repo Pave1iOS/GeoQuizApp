@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">GeoQuizApp</string>
-    <string name="question_text">Is there more than a million people in Indonesia?</string>
-    <string name="true_button">True</string>
-    <string name="false_button">False</string>
+    <string name="true_button">Да</string>
+    <string name="false_button">Нет</string>
+    <string name="next_button">Следующий вопросс</string>
+    <string name="correct_toast">Верно!</string>
+    <string name="incorrect_toast">Не верно!</string>
+
+    <string name="question_daddy_potter">Папу Гарри Поттера звали "Сириус Блэк"?</string>
+    <string name="question_volan_de_mort">
+        Настоящее имя Волан-де-Морта - "Том Марволо Реддл"?
+    </string>
+    <string name="question_second_name_potter">Второе имя у Гарри это Уизли?</string>
+    <string name="question_pridira">Журнал Придира издает отец Полумны?</string>
+    <string name="question_avada_kedabra">Заклинание левитации это "Авада-Кедабра"?</string>
+    <string name="question_mantia_nevidimka">
+        Мантию-невидимку Гарии подарил "Альбус Дамблдор"?
+    </string>
+
 </resources>
