@@ -2,6 +2,7 @@ package com.example.geoquizapp
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +12,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvQuestion: TextView
     private lateinit var buttonTrue: Button
     private lateinit var buttonFalse: Button
-    private lateinit var buttonNext: Button
+    private lateinit var buttonNext: ImageButton
+    private lateinit var buttonBack: ImageButton
 
     private val questionsList = listOf(
         Question(R.string.question_daddy_potter, true),
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         buttonTrue = findViewById(R.id.button_true)
         buttonFalse = findViewById(R.id.button_false)
         buttonNext = findViewById(R.id.button_next)
+        buttonBack = findViewById(R.id.button_back)
 
         // listener
         buttonTrue.setOnClickListener {
@@ -44,10 +47,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonNext.setOnClickListener {
-            questionIndex = (questionIndex + 1) % questionsList.size
-            updateQuestion()
+            nextQuestion()
         }
 
+        buttonBack.setOnClickListener {
+            otherQuestion()
+        }
+
+        tvQuestion.setOnClickListener {
+            nextQuestion()
+        }
+
+        updateQuestion()
+    }
+
+    // private fun
+    private fun otherQuestion() {
+        if (questionIndex > 0) {
+            questionIndex = (questionIndex - 1) % questionsList.size
+            updateQuestion()
+        } else {
+            questionIndex = questionsList.size - 1
+            updateQuestion()
+        }
+    }
+
+    private fun nextQuestion() {
+        questionIndex = (questionIndex + 1) % questionsList.size
         updateQuestion()
     }
 
