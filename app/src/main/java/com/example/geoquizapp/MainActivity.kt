@@ -1,11 +1,15 @@
 package com.example.geoquizapp
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate is called")
         setContentView(R.layout.activity_main)
 
         // properties
@@ -61,7 +66,42 @@ class MainActivity : AppCompatActivity() {
         updateQuestion()
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart is called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume is called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause is called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop is called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy is called")
+    }
+
     // private fun
+    private fun enabledButtons(isEnabled: Boolean) {
+//        if (isEnabled) {
+//            buttonTrue.isEnabled = true
+//            buttonFalse.isEnabled = true
+//        } else {
+//            buttonTrue.isEnabled = false
+//            buttonFalse.isEnabled = false
+//        }
+    }
+
     private fun otherQuestion() {
         if (questionIndex > 0) {
             questionIndex = (questionIndex - 1) % questionsList.size
@@ -75,6 +115,7 @@ class MainActivity : AppCompatActivity() {
     private fun nextQuestion() {
         questionIndex = (questionIndex + 1) % questionsList.size
         updateQuestion()
+        enabledButtons(false)
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -86,7 +127,9 @@ class MainActivity : AppCompatActivity() {
             R.string.incorrect_toast
         }
 
-        Toast.makeText(this, messageResID, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, messageResID, Toast.LENGTH_LONG).show()
+
+        enabledButtons(false)
     }
 
     private fun updateQuestion() {
