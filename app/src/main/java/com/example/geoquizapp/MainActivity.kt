@@ -2,10 +2,10 @@ package com.example.geoquizapp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 
@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
 
         // listener
         buttonTrue.setOnClickListener {
-            checkAnswer(true)
+            checkAnswer(true, it)
         }
 
         buttonFalse.setOnClickListener {
-            checkAnswer(false)
+            checkAnswer(false, it)
         }
 
         buttonNext.setOnClickListener {
@@ -93,13 +93,21 @@ class MainActivity : AppCompatActivity() {
 
     // private fun
     private fun enabledButtons(isEnabled: Boolean) {
-//        if (isEnabled) {
-//            buttonTrue.isEnabled = true
-//            buttonFalse.isEnabled = true
-//        } else {
-//            buttonTrue.isEnabled = false
-//            buttonFalse.isEnabled = false
-//        }
+        if (isEnabled) {
+            buttonTrue.isEnabled = true
+            buttonFalse.isEnabled = true
+            buttonTrue.alpha = 1f
+            buttonFalse.alpha = 1f
+        } else {
+            buttonTrue.isEnabled = false
+            buttonFalse.isEnabled = false
+            buttonTrue.alpha = 0.5f
+            buttonFalse.alpha = 0.5f
+        }
+    }
+
+    private fun showResult() {
+
     }
 
     private fun otherQuestion() {
@@ -115,10 +123,10 @@ class MainActivity : AppCompatActivity() {
     private fun nextQuestion() {
         questionIndex = (questionIndex + 1) % questionsList.size
         updateQuestion()
-        enabledButtons(false)
+        enabledButtons(true)
     }
 
-    private fun checkAnswer(userAnswer: Boolean) {
+    private fun checkAnswer(userAnswer: Boolean, view: View) {
         val currectAnswer = questionsList[questionIndex].answer
 
         val messageResID = if (userAnswer == currectAnswer) {
@@ -127,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             R.string.incorrect_toast
         }
 
-        Toast.makeText(this, messageResID, Toast.LENGTH_LONG).show()
+        Snackbar.make(view, messageResID, Snackbar.LENGTH_SHORT).show()
 
         enabledButtons(false)
     }
