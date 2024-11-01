@@ -106,8 +106,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showResult() {
+    private fun showResult(view: View, correctAnswerCount: Int) {
 
+        if (questionIndex == questionsList.size - 1) {
+            Snackbar.make(
+                this,
+                view,
+                "Поздравляю! Вы завершили тест.\nВы верно ответили на " +
+                        "$correctAnswerCount вопрос(ов)",
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun otherQuestion() {
@@ -127,9 +136,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(userAnswer: Boolean, view: View) {
-        val currectAnswer = questionsList[questionIndex].answer
+        val correctAnswer = questionsList[questionIndex].answer
+        var correctAnswerCount = 0
 
-        val messageResID = if (userAnswer == currectAnswer) {
+        val messageResID = if (userAnswer == correctAnswer) {
+            correctAnswerCount += 1
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -138,6 +149,8 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(view, messageResID, Snackbar.LENGTH_SHORT).show()
 
         enabledButtons(false)
+
+        showResult(view, correctAnswerCount)
     }
 
     private fun updateQuestion() {
