@@ -5,6 +5,8 @@
     <string name="next_button">Следующий вопросс</string>
     <string name="correct_toast">Верно!</string>
     <string name="incorrect_toast">Не верно!</string>
+    <string name="final_message">Поздравляю! Вы прошли этот тест!\nВаш результат</string>
+    <string name="final_title">Тест завершен!</string>
 
     <string name="question_daddy_potter">Папу Гарри Поттера звали "Сириус Блэк"?</string>
     <string name="question_volan_de_mort">

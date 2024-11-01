@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var questionIndex = 0
+    private var correctAnswerCount = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,16 +108,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showResult(view: View, correctAnswerCount: Int) {
+    private fun showResult(correctAnswerCount: Int) {
 
         if (questionIndex == questionsList.size - 1) {
-            Snackbar.make(
-                this,
-                view,
-                "Поздравляю! Вы завершили тест.\nВы верно ответили на " +
-                        "$correctAnswerCount вопрос(ов)",
-                Snackbar.LENGTH_SHORT
-            ).show()
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.final_title)
+                .setMessage("${getString(R.string.final_message)} $correctAnswerCount")
+                .setPositiveButton("OK") { _, _ ->
+                    questionIndex = 0
+                    updateQuestion()
+                    enabledButtons(true)
+                }
+                .show()
         }
     }
 
@@ -137,7 +141,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAnswer(userAnswer: Boolean, view: View) {
         val correctAnswer = questionsList[questionIndex].answer
-        var correctAnswerCount = 0
 
         val messageResID = if (userAnswer == correctAnswer) {
             correctAnswerCount += 1
@@ -150,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
         enabledButtons(false)
 
-        showResult(view, correctAnswerCount)
+        showResult(correctAnswerCount)
     }
 
     private fun updateQuestion() {
