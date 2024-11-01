@@ -1,11 +1,13 @@
 package com.example.geoquizapp
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var questionIndex = 0
+    var correctAnswerCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,13 +112,9 @@ class MainActivity : AppCompatActivity() {
     private fun showResult(view: View, correctAnswerCount: Int) {
 
         if (questionIndex == questionsList.size - 1) {
-            Snackbar.make(
-                this,
-                view,
-                "Поздравляю! Вы завершили тест.\nВы верно ответили на " +
-                        "$correctAnswerCount вопрос(ов)",
-                Snackbar.LENGTH_SHORT
-            ).show()
+            NotificationHelper(this).showNotification(
+                "Поздравляю! Вы завершили тест! количество верных ответов $correctAnswerCount"
+            )
         }
     }
 
@@ -137,7 +136,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAnswer(userAnswer: Boolean, view: View) {
         val correctAnswer = questionsList[questionIndex].answer
-        var correctAnswerCount = 0
 
         val messageResID = if (userAnswer == correctAnswer) {
             correctAnswerCount += 1
