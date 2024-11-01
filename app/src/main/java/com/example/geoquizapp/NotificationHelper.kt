@@ -76,7 +76,5 @@ class NotificationHelper(private val context: Context) {
             notify(1, builder.build())
             Log.d("NotificationHelper", "Notification displayed: $message")
         }
-
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

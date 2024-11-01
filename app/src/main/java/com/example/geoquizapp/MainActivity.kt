@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        NotificationHelper(this)
         Log.d(TAG, "onResume is called")
     }
 
