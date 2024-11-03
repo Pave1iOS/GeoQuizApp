@@ -7,9 +7,11 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
+private const val KEY_INDEX = "index"
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,23 +21,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonNext: ImageButton
     private lateinit var buttonBack: ImageButton
 
-    private val questionsList = listOf(
-        Question(R.string.question_daddy_potter, true),
-        Question(R.string.question_volan_de_mort, true),
-        Question(R.string.question_second_name_potter, false),
-        Question(R.string.question_pridira, true),
-        Question(R.string.question_avada_kedabra, false),
-        Question(R.string.question_mantia_nevidimka, true)
-    )
+    private val viewModel: QuizViewModel by lazy {
+        ViewModelProvider(this)[QuizViewModel::class.java]
+    }
 
-    private var questionIndex = 0
     private var correctAnswerCount = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate is called")
         setContentView(R.layout.activity_main)
+
+        // save state
+        val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
+        viewModel.questionIndex = currentIndex
 
         // properties
         tvQuestion = findViewById(R.id.tv_question)
@@ -58,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonBack.setOnClickListener {
-            otherQuestion()
+            pastQuestion()
         }
 
         tvQuestion.setOnClickListener {
@@ -81,6 +80,13 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause is called")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        Log.i(TAG, "onSaveInstanceState is called")
+        outState.putInt(KEY_INDEX, viewModel.questionIndex)
     }
 
     override fun onStop() {
@@ -110,12 +116,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showResult(correctAnswerCount: Int) {
 
-        if (questionIndex == questionsList.size - 1) {
+        if (viewModel.questionIndex == viewModel.getLastQuestionIndex) {
             android.app.AlertDialog.Builder(this)
                 .setTitle(R.string.final_title)
                 .setMessage("${getString(R.string.final_message)} $correctAnswerCount")
                 .setPositiveButton("OK") { _, _ ->
-                    questionIndex = 0
+                    viewModel.firstQuestion()
                     updateQuestion()
                     enabledButtons(true)
                 }
@@ -123,24 +129,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun otherQuestion() {
-        if (questionIndex > 0) {
-            questionIndex = (questionIndex - 1) % questionsList.size
+    private fun pastQuestion() {
+        if (viewModel.questionIndex > 0) {
+            viewModel.pastQuestion()
             updateQuestion()
         } else {
-            questionIndex = questionsList.size - 1
+            viewModel.lastQuestion()
             updateQuestion()
         }
     }
 
     private fun nextQuestion() {
-        questionIndex = (questionIndex + 1) % questionsList.size
+        viewModel.nextQuestion()
         updateQuestion()
         enabledButtons(true)
     }
 
     private fun checkAnswer(userAnswer: Boolean, view: View) {
-        val correctAnswer = questionsList[questionIndex].answer
+        val correctAnswer = viewModel.getCurrentQuestionAnswer
 
         val messageResID = if (userAnswer == correctAnswer) {
             correctAnswerCount += 1
@@ -157,7 +163,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateQuestion() {
-        val currentQuestion = questionsList[questionIndex].textResID
+        val currentQuestion = viewModel.getCurrentQuestionText
         tvQuestion.setText(currentQuestion)
     }
 }
