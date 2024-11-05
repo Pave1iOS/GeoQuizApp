@@ -2,7 +2,6 @@
     <string name="app_name">GeoQuizApp</string>
     <string name="true_button">Да</string>
     <string name="false_button">Нет</string>
-    <string name="next_button">Следующий вопросс</string>
     <string name="correct_toast">Верно!</string>
     <string name="incorrect_toast">Не верно!</string>
     <string name="final_message">Поздравляю! Вы прошли этот тест!\nВаш результат</string>
