@@ -8,6 +8,7 @@ private const val TAG = "QuizViewModel"
 class QuizViewModel: ViewModel() {
 
     var questionIndex = 0
+    var isCheater = false
 
     private val questionsList = listOf(
         Question(R.string.question_daddy_potter, true),

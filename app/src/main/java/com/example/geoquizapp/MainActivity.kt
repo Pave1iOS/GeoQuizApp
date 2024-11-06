@@ -1,23 +1,27 @@
 package com.example.geoquizapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
+private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tvQuestion: TextView
     private lateinit var buttonTrue: Button
     private lateinit var buttonFalse: Button
+    private lateinit var buttonCheat: Button
     private lateinit var buttonNext: ImageButton
     private lateinit var buttonBack: ImageButton
 
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         tvQuestion = findViewById(R.id.tv_question)
         buttonTrue = findViewById(R.id.button_true)
         buttonFalse = findViewById(R.id.button_false)
+        buttonCheat = findViewById(R.id.cheat_button)
         buttonNext = findViewById(R.id.button_next)
         buttonBack = findViewById(R.id.button_back)
 
@@ -50,6 +55,12 @@ class MainActivity : AppCompatActivity() {
 
         buttonFalse.setOnClickListener {
             checkAnswer(false, it)
+        }
+        
+        buttonCheat.setOnClickListener {
+            val answerIsTrue = viewModel.getCurrentQuestionAnswer
+            val intent = CheatActivity.newIntent(this, answerIsTrue)
+            startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
 
         buttonNext.setOnClickListener {
@@ -65,6 +76,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         updateQuestion()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(resultCode != RESULT_OK) {
+            return
+        }
+
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            viewModel.isCheater =
+                data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
     }
 
     override fun onStart() {
@@ -148,7 +172,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean, view: View) {
         val correctAnswer = viewModel.getCurrentQuestionAnswer
 
-        val messageResID = if (userAnswer == correctAnswer) {
+        val messageResID = if (viewModel.isCheater) {
+            R.string.judgment_wrong
+        } else if (userAnswer == correctAnswer) {
             correctAnswerCount += 1
             R.string.correct_toast
         } else {
