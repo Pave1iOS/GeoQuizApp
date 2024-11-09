@@ -7,6 +7,7 @@ private const val TAG = "QuizViewModel"
 
 class QuizViewModel: ViewModel() {
 
+    private var useCheatCount = 0
     var questionIndex = 0
     var isCheater = false
 
@@ -19,6 +20,9 @@ class QuizViewModel: ViewModel() {
         Question(R.string.question_mantia_nevidimka, true)
     )
 
+    val getUseCheatCount: Int
+        get() = useCheatCount
+
     val getCurrentQuestionAnswer: Boolean
         get() = questionsList[questionIndex].answer
 
@@ -27,6 +31,10 @@ class QuizViewModel: ViewModel() {
 
     val getLastQuestionIndex: Int
         get() = questionsList.size - 1
+
+    fun cheatUsed() {
+        useCheatCount += 1
+    }
 
     fun nextQuestion() {
         questionIndex = (questionIndex + 1) % questionsList.size

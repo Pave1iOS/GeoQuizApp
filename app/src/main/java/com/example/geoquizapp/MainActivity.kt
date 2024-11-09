@@ -1,6 +1,7 @@
 package com.example.geoquizapp
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -38,7 +39,13 @@ class MainActivity : AppCompatActivity() {
                 viewModel.isCheater =
                     data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
 
-                Log.d(TAG, "cheatActivityLauncher - ${viewModel.isCheater}") }
+                if (viewModel.isCheater) {
+                    viewModel.cheatUsed()
+                }
+
+                Log.d(TAG, "cheatActivityLauncher - ${viewModel.isCheater}")
+                Log.i(TAG, "cheat used = ${viewModel.getUseCheatCount}")
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +53,9 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate is called")
         setContentView(R.layout.activity_main)
 
-        // save state
         val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
         viewModel.questionIndex = currentIndex
 
-        // properties
         tvQuestion = findViewById(R.id.tv_question)
         buttonTrue = findViewById(R.id.button_true)
         buttonFalse = findViewById(R.id.button_false)
@@ -58,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         buttonNext = findViewById(R.id.button_next)
         buttonBack = findViewById(R.id.button_back)
 
-        // listener
         buttonTrue.setOnClickListener {
             checkAnswer(true, it)
         }
@@ -140,7 +144,9 @@ class MainActivity : AppCompatActivity() {
         if (viewModel.questionIndex == viewModel.getLastQuestionIndex) {
             android.app.AlertDialog.Builder(this)
                 .setTitle(R.string.final_title)
-                .setMessage("${getString(R.string.final_message)} $correctAnswerCount")
+                .setMessage("${getString(R.string.final_message)} $correctAnswerCount " +
+                        "${getString(R.string.question_text)}\n${getString(R.string.cheat_message)} " +
+                        "${viewModel.getUseCheatCount} ${getString(R.string.cheat_text)}")
                 .setPositiveButton("OK") { _, _ ->
                     viewModel.firstQuestion()
                     updateQuestion()

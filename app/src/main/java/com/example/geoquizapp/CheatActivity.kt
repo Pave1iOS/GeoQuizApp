@@ -50,10 +50,7 @@ class CheatActivity : AppCompatActivity() {
 
             setAnswerShownResult(viewModel.isCheating)
 
-            viewModel.useCheat()
-
             Log.d(TAG, "setOnClickListener - is cheating = ${viewModel.isCheating}")
-            Log.i(TAG, "cheat used is - ${viewModel.getCheatUseCount} ")
         }
 
         setAnswerShownResult(viewModel.isCheating)
