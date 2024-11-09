@@ -39,9 +39,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.isCheater =
                     data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
 
-                if (viewModel.isCheater) {
-                    viewModel.cheatUsed()
-                }
+                viewModel.cheatUsed()
 
                 Log.d(TAG, "cheatActivityLauncher - ${viewModel.isCheater}")
                 Log.i(TAG, "cheat used = ${viewModel.getUseCheatCount}")
@@ -72,9 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         buttonCheat.setOnClickListener {
-            val answerIsTrue = viewModel.getCurrentQuestionAnswer
-            val intent = CheatActivity.newIntent(this, answerIsTrue)
-            cheatActivityLauncher.launch(intent)
+            goToCheatScene()
         }
 
         buttonNext.setOnClickListener {
@@ -125,6 +121,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     // private fun
+    private fun goToCheatScene() {
+        val answerIsTrue = viewModel.getCurrentQuestionAnswer
+        val intent = CheatActivity.newIntent(this, answerIsTrue)
+        cheatActivityLauncher.launch(intent)
+    }
+
     private fun enabledButtons(isEnabled: Boolean) {
         if (isEnabled) {
             buttonTrue.isEnabled = true

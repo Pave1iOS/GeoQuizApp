@@ -1,6 +1,5 @@
 package com.example.geoquizapp
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 
 private const val TAG = "QuizViewModel"
@@ -33,7 +32,9 @@ class QuizViewModel: ViewModel() {
         get() = questionsList.size - 1
 
     fun cheatUsed() {
-        useCheatCount += 1
+        if (isCheater) {
+            useCheatCount += 1
+        }
     }
 
     fun nextQuestion() {
