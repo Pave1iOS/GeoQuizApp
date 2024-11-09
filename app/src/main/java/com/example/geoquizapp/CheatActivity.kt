@@ -4,14 +4,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import kotlin.math.truncate
 
+private const val TAG = "CheatActivity"
 private const val EXTRA_ANSWER_IS_TRUE = "answer_is_true"
 const val EXTRA_ANSWER_SHOWN = "answer_show"
 
@@ -20,7 +23,9 @@ class CheatActivity : AppCompatActivity() {
     private lateinit var answerTextView: TextView
     private lateinit var showAnswerButton: Button
 
-    private var answerIsTrue = false
+    private val viewModel: CheatViewModel by lazy {
+        ViewModelProvider(this)[CheatViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,20 +34,38 @@ class CheatActivity : AppCompatActivity() {
         answerTextView = findViewById(R.id.answer_text_view)
         showAnswerButton = findViewById(R.id.show_answer_button)
 
-        answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
+        viewModel.answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
+
+        viewModel.isCheating =
+            savedInstanceState?.getBoolean(EXTRA_ANSWER_SHOWN, false) ?: false
 
         showAnswerButton.setOnClickListener {
             val answerText = when {
-                answerIsTrue -> R.string.true_button
+                viewModel.answerIsTrue -> R.string.true_button
                 else -> R.string.false_button
             }
-
             answerTextView.setText(answerText)
-            setAnswerShownResult(true)
+
+            viewModel.isCheating = true
+
+            setAnswerShownResult(viewModel.isCheating)
+
+            viewModel.useCheat()
+
+            Log.d(TAG, "setOnClickListener - is cheating = ${viewModel.isCheating}")
+            Log.i(TAG, "cheat used is - ${viewModel.getCheatUseCount} ")
         }
+
+        setAnswerShownResult(viewModel.isCheating)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
+        outState.putBoolean(EXTRA_ANSWER_SHOWN, viewModel.isCheating)
+
+        Log.i(TAG, "onSaveInstanceState - is cheating = ${viewModel.isCheating}")
+    }
 
     private fun setAnswerShownResult(isAnswerShown: Boolean) {
         val data = Intent().apply {
@@ -51,11 +74,6 @@ class CheatActivity : AppCompatActivity() {
 
         setResult(Activity.RESULT_OK, data)
     }
-
-
-
-
-
 
     companion object {
         fun newIntent(packageContext: Context, answerIsTrue: Boolean): Intent {

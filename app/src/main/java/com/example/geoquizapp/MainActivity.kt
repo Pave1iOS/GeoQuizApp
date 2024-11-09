@@ -1,5 +1,6 @@
 package com.example.geoquizapp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
-private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +30,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var correctAnswerCount = 0
+
+    private val cheatActivityLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data: Intent? = result.data
+                viewModel.isCheater =
+                    data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+
+                Log.d(TAG, "cheatActivityLauncher - ${viewModel.isCheater}") }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         buttonCheat.setOnClickListener {
             val answerIsTrue = viewModel.getCurrentQuestionAnswer
             val intent = CheatActivity.newIntent(this, answerIsTrue)
-            startActivityForResult(intent, REQUEST_CODE_CHEAT)
+            cheatActivityLauncher.launch(intent)
         }
 
         buttonNext.setOnClickListener {
@@ -76,19 +86,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         updateQuestion()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(resultCode != RESULT_OK) {
-            return
-        }
-
-        if (requestCode == REQUEST_CODE_CHEAT) {
-            viewModel.isCheater =
-                data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
-        }
     }
 
     override fun onStart() {
@@ -172,13 +169,16 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean, view: View) {
         val correctAnswer = viewModel.getCurrentQuestionAnswer
 
-        val messageResID = if (viewModel.isCheater) {
-            R.string.judgment_wrong
-        } else if (userAnswer == correctAnswer) {
-            correctAnswerCount += 1
-            R.string.correct_toast
-        } else {
-            R.string.incorrect_toast
+        val messageResID = when {
+            viewModel.isCheater -> {
+                viewModel.isCheater = false
+                R.string.judgment_wrong
+            }
+            userAnswer == correctAnswer -> {
+                correctAnswerCount += 1
+                R.string.correct_toast
+            }
+            else -> R.string.incorrect_toast
         }
 
         Snackbar.make(view, messageResID, Snackbar.LENGTH_SHORT).show()
