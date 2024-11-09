@@ -3,6 +3,7 @@ package com.example.geoquizapp
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -18,6 +19,7 @@ class CheatActivity : AppCompatActivity() {
 
     private lateinit var answerTextView: TextView
     private lateinit var showAnswerButton: Button
+    private lateinit var apiLevelTextView: TextView
 
     private val viewModel: CheatViewModel by lazy {
         ViewModelProvider(this)[CheatViewModel::class.java]
@@ -29,6 +31,7 @@ class CheatActivity : AppCompatActivity() {
 
         answerTextView = findViewById(R.id.answer_text_view)
         showAnswerButton = findViewById(R.id.show_answer_button)
+        apiLevelTextView = findViewById(R.id.api_level_text_view)
 
         viewModel.answerIsTrue = intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false)
 
@@ -48,6 +51,8 @@ class CheatActivity : AppCompatActivity() {
 
             Log.d(TAG, "setOnClickListener - is cheating = ${viewModel.isCheating}")
         }
+
+        apiLevelTextView.text = getString(R.string.api_level_text, Build.VERSION.SDK_INT)
 
         setAnswerShownResult(viewModel.isCheating)
     }

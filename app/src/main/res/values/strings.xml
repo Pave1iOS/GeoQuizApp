@@ -13,6 +13,7 @@
     <string name="judgment_wrong">Жульничать не хорошо!</string>
     <string name="cheat_message">Вы сжульничали</string>
     <string name="cheat_text">раз(а)</string>
+    <string name="api_level_text">API Level: %1$d</string>
 
     <string name="question_daddy_potter">Папу Гарри Поттера звали "Сириус Блэк"?</string>
     <string name="question_volan_de_mort">

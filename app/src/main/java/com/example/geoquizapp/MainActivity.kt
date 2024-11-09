@@ -1,8 +1,11 @@
 package com.example.geoquizapp
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +14,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate is called")
@@ -70,7 +75,23 @@ class MainActivity : AppCompatActivity() {
         }
         
         buttonCheat.setOnClickListener {
-            goToCheatScene()
+
+            val answerIsTrue = viewModel.getCurrentQuestionAnswer
+            val intent = CheatActivity.newIntent(this, answerIsTrue)
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val options = ActivityOptionsCompat.makeClipRevealAnimation(
+                    it,
+                    0,
+                    0,
+                    it.width,
+                    it.height
+                )
+
+                cheatActivityLauncher.launch(intent, options)
+            } else {
+                cheatActivityLauncher.launch(intent)
+            }
         }
 
         buttonNext.setOnClickListener {
@@ -121,12 +142,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     // private fun
-    private fun goToCheatScene() {
-        val answerIsTrue = viewModel.getCurrentQuestionAnswer
-        val intent = CheatActivity.newIntent(this, answerIsTrue)
-        cheatActivityLauncher.launch(intent)
-    }
-
     private fun enabledButtons(isEnabled: Boolean) {
         if (isEnabled) {
             buttonTrue.isEnabled = true
