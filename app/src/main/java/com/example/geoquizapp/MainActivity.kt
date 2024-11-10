@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (attempts == 0) {
-            enabledButtons(isEnabledCheat = false)
+            enableButtonCheat(false)
         }
     }
 
@@ -164,20 +164,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun enabledButtons(
-        isEnabledTrueAndFalse: Boolean = true,
-        isEnabledCheat: Boolean = true
-    ) {
-        setButtonEnabled(buttonTrue, isEnabledTrueAndFalse)
-        setButtonEnabled(buttonFalse, isEnabledTrueAndFalse)
-        setButtonEnabled(buttonCheat, isEnabledCheat)
+    private fun enableButtonCheat(isEnabled: Boolean) {
+        setButtonEnabled(buttonCheat, isEnabled)
+    }
+
+    private fun enabledButtonTrueAndFalse(isEnabled: Boolean) {
+        setButtonEnabled(buttonTrue, isEnabled)
+        setButtonEnabled(buttonFalse, isEnabled)
     }
 
     private fun setButtonEnabled(button: Button, isEnabled: Boolean) {
         button.isEnabled = isEnabled
         button.alpha = if (isEnabled) 1f else 0.5f
     }
-
 
     private fun showResult(correctAnswerCount: Int) {
 
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("OK") { _, _ ->
                     viewModel.firstQuestion()
                     updateQuestion()
-                    enabledButtons(true)
+                    enabledButtonTrueAndFalse(true)
                 }
                 .show()
         }
@@ -209,7 +208,7 @@ class MainActivity : AppCompatActivity() {
     private fun nextQuestion() {
         viewModel.nextQuestion()
         updateQuestion()
-        enabledButtons(true)
+        enabledButtonTrueAndFalse(true)
     }
 
     private fun checkAnswer(userAnswer: Boolean, view: View) {
@@ -229,7 +228,7 @@ class MainActivity : AppCompatActivity() {
 
         Snackbar.make(view, messageResID, Snackbar.LENGTH_SHORT).show()
 
-        enabledButtons(false)
+        enabledButtonTrueAndFalse(false)
 
         showResult(correctAnswerCount)
     }
