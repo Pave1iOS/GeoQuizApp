@@ -49,6 +49,13 @@
         android:text="@string/cheat_button"
         android:padding="20dp"/>
 
+    <TextView
+        android:id="@+id/number_attempts_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        tools:text="Сжульничать можно ещу 2 раз(а)"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

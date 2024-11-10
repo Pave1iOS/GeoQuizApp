@@ -6,6 +6,7 @@ private const val TAG = "QuizViewModel"
 
 class QuizViewModel: ViewModel() {
 
+    private var cheatAttempts = 3
     private var useCheatCount = 0
     var questionIndex = 0
     var isCheater = false
@@ -18,6 +19,9 @@ class QuizViewModel: ViewModel() {
         Question(R.string.question_avada_kedabra, false),
         Question(R.string.question_mantia_nevidimka, true)
     )
+
+    val getCheatAttempt: Int
+        get() = cheatAttempts
 
     val getUseCheatCount: Int
         get() = useCheatCount
@@ -34,6 +38,7 @@ class QuizViewModel: ViewModel() {
     fun cheatUsed() {
         if (isCheater) {
             useCheatCount += 1
+            cheatAttempts -= 1
         }
     }
 
